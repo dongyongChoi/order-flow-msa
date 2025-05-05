@@ -16,6 +16,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional
     public UserDto registerUser(String username, String email) {
         Optional<User> findEmailOptional = userRepository.findByEmail(email);
 
