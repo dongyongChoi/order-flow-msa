@@ -1,5 +1,6 @@
 package io.github.cni274.orderservice.service;
 
+import io.github.cni274.orderservice.dto.UserDto;
 import io.github.cni274.orderservice.entity.User;
 import io.github.cni274.orderservice.exception.UserException;
 import io.github.cni274.orderservice.repository.UserRepository;
@@ -15,11 +16,18 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public void registerUser(String username, String email) {
+    public UserDto registerUser(String username, String email) {
         Optional<User> findEmailOptional = userRepository.findByEmail(email);
 
         if (findEmailOptional.isPresent()) {
             throw new UserException();
         }
+
+        User addUser = User.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        return UserDto.valueOf(userRepository.save(addUser));
     }
 }
