@@ -1,5 +1,6 @@
 package io.github.cni274.orderservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cni274.orderservice.advice.GlobalRestControllerAdvice;
 import io.github.cni274.orderservice.dto.UserDto;
@@ -18,6 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.StringUtils;
+
+import java.io.UnsupportedEncodingException;
 
 import static io.github.cni274.orderservice.advice.GlobalRestControllerAdvice.ErrorResponse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,8 +93,7 @@ class UserControllerTest {
         );
 
         // then
-        String body = resultActions.andReturn().getResponse().getContentAsString();
-        ErrorResponse errorResponse = objectMapper.readValue(body, ErrorResponse.class);
+        ErrorResponse errorResponse = getErrorResponse(resultActions);
 
         resultActions.andExpect(status().isBadRequest());
         assertThat(errorResponse.getMessage()).isEqualTo(ErrorResult.DUPLICATE_EMAIL.getMessage());
@@ -135,5 +138,67 @@ class UserControllerTest {
         assertThat(userDto.getEmail()).isEqualTo(email);
 
         verify(userService).registerUser(addUser.getUsername(), addUser.getEmail());
+    }
+
+    @Test
+    @DisplayName("등록된 유저 조회 실패 - 존재하지 않음")
+    void failedGetUser() throws Exception {
+        doThrow(new UserException(ErrorResult.NOT_FOUND_USER)).when(userService).getUserByEmail(email);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/users")
+                        .param("email", email)
+        );
+
+        // then
+        ErrorResponse errorResponse = getErrorResponse(resultActions);
+
+        resultActions.andExpect(status().isNotFound());
+        assertThat(errorResponse).isNotNull();
+        assertThat(errorResponse.getMessage()).isEqualTo(ErrorResult.NOT_FOUND_USER.getMessage());
+
+        verify(userService).getUserByEmail(email);
+    }
+
+    @Test
+    @DisplayName("등록된 유저 조회 성공")
+    void successfulGetUser() throws Exception {
+        // given
+        UserDto returnUserDto = UserDto.builder()
+                .id(-1L)
+                .username(username)
+                .email(email)
+                .build();
+
+        doReturn(returnUserDto).when(userService).getUserByEmail(email);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/users")
+                        .param("email", email)
+        );
+
+        // then
+        UserDto resultUserDto = getBodyResponse(resultActions, UserDto.class);
+
+        resultActions.andExpect(status().isOk());
+        assertThat(resultUserDto).isNotNull();
+        assertThat(resultUserDto.getId()).isEqualTo(-1L);
+        assertThat(resultUserDto.getUsername()).isEqualTo(username);
+        assertThat(resultUserDto.getEmail()).isEqualTo(email);
+
+        verify(userService).getUserByEmail(email);
+    }
+
+
+    private ErrorResponse getErrorResponse(ResultActions resultActions) throws UnsupportedEncodingException, JsonProcessingException {
+        return getBodyResponse(resultActions, ErrorResponse.class);
+    }
+
+
+    private <T> T getBodyResponse(ResultActions resultActions, Class<T> clazz) throws UnsupportedEncodingException, JsonProcessingException {
+        String body = resultActions.andReturn().getResponse().getContentAsString();
+        return StringUtils.hasText(body) ? objectMapper.readValue(body, clazz) : null;
     }
 }
