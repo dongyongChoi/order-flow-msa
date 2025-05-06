@@ -1,6 +1,6 @@
-package io.github.cni274.orderservice.entity;
+package io.github.cni274.orderservice.order.entity;
 
-import io.github.cni274.orderservice.dto.OrderDto;
+import io.github.cni274.orderservice.order.dto.OrderDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package io.github.cni274.orderservice.exception;
+package io.github.cni274.orderservice.order.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

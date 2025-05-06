@@ -1,10 +1,11 @@
 package io.github.cni274.orderservice.service;
 
-import io.github.cni274.orderservice.dto.OrderDto;
-import io.github.cni274.orderservice.entity.Order;
-import io.github.cni274.orderservice.exception.OrderErrorResult;
-import io.github.cni274.orderservice.exception.OrderException;
-import io.github.cni274.orderservice.repository.OrderRepository;
+import io.github.cni274.orderservice.order.dto.OrderDto;
+import io.github.cni274.orderservice.order.entity.Order;
+import io.github.cni274.orderservice.order.exception.OrderErrorResult;
+import io.github.cni274.orderservice.order.exception.OrderException;
+import io.github.cni274.orderservice.order.repository.OrderRepository;
+import io.github.cni274.orderservice.order.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

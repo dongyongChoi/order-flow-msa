@@ -1,10 +1,10 @@
-package io.github.cni274.orderservice.service;
+package io.github.cni274.orderservice.order.service;
 
-import io.github.cni274.orderservice.dto.OrderDto;
-import io.github.cni274.orderservice.entity.Order;
-import io.github.cni274.orderservice.exception.OrderErrorResult;
-import io.github.cni274.orderservice.exception.OrderException;
-import io.github.cni274.orderservice.repository.OrderRepository;
+import io.github.cni274.orderservice.order.dto.OrderDto;
+import io.github.cni274.orderservice.order.entity.Order;
+import io.github.cni274.orderservice.order.exception.OrderErrorResult;
+import io.github.cni274.orderservice.order.exception.OrderException;
+import io.github.cni274.orderservice.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

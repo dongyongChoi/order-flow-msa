@@ -1,6 +1,6 @@
-package io.github.cni274.orderservice.dto;
+package io.github.cni274.orderservice.order.dto;
 
-import io.github.cni274.orderservice.entity.Order;
+import io.github.cni274.orderservice.order.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
