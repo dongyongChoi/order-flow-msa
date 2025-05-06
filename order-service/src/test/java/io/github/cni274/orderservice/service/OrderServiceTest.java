@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -69,6 +71,37 @@ class OrderServiceTest {
         orderService.createOrder(orderDto);
 
         verify(orderRepository).save(any(Order.class));
+    }
+
+    @Test
+    @DisplayName("주문 조회 실패 - 주문이 존재하지 않음")
+    void getOrder_OrderNotFound() {
+        Long orderId = -1L;
+
+        doReturn(Optional.empty())
+                .when(orderRepository).findById(orderId);
+
+
+
+        OrderException orderException = assertThrows(OrderException.class, () -> orderService.getOrder(orderId));
+
+        assertThat(orderException.getErrorResult()).isEqualTo(OrderErrorResult.ORDER_NOT_FOUND);
+
+        verify(orderRepository).findById(orderId);
+    }
+
+    @Test
+    @DisplayName("주문 조회 성공")
+    void successfulGetOrder() {
+        Long orderId = -1L;
+
+        doReturn(Optional.of(Order.builder().build())).when(orderRepository).findById(orderId);
+
+        OrderDto order = orderService.getOrder(orderId);
+
+        assertThat(order).isNotNull();
+
+        verify(orderRepository).findById(orderId);
     }
 
 }

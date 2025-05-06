@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -33,5 +35,15 @@ public class OrderService {
         }
 
         orderRepository.save(Order.valueOf(orderDto));
+    }
+
+    public OrderDto getOrder(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+
+        if (orderOptional.isEmpty()) {
+            throw new OrderException(OrderErrorResult.ORDER_NOT_FOUND);
+        }
+
+        return OrderDto.valueOf(orderOptional.get());
     }
 }
