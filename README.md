@@ -7,3 +7,4 @@
 ## 사용 기술
 - FeignClient
 - Spring Cloud Gateway
+- Eureka
