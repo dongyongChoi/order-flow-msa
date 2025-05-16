@@ -14,8 +14,14 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   application:
     name: order-service
+  config:
+    import: optional:configserver:http://localhost:8888
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+
+my:
+  data: 'hello'
